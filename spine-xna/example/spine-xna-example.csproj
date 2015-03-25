@@ -117,7 +117,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="data\goblins-ffd.png" />
-    <Content Include="data\raptor.png" />
+    <Content Include="data\raptor.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\spineboy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -164,8 +166,12 @@
   <ItemGroup>
     <None Include="data\goblins-ffd.atlas" />
     <None Include="data\goblins-ffd.json" />
-    <None Include="data\raptor.atlas" />
-    <None Include="data\raptor.json" />
+    <None Include="data\raptor.atlas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\raptor.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="data\spineboy.atlas">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
