@@ -242,6 +242,12 @@ namespace Spine {
 			return tracks[trackIndex];
 		}
 
+        /** Returns true if no animation is set or if the current time is greater than the animation duration, regardless of looping. */
+        public bool IsComplete()
+        {
+            return GetCurrent(0).Animation == null || GetCurrent(0).Time >= GetCurrent(0).Animation.Duration;
+        }
+
 		override public String ToString () {
 			StringBuilder buffer = new StringBuilder();
 			for (int i = 0, n = tracks.Count; i < n; i++) {

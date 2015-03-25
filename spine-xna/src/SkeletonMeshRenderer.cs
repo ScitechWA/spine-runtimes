@@ -227,5 +227,90 @@ namespace Spine {
 				}
 			}
 		}
+
+        public Rectangle calcBoundingRect(Skeleton skeleton)
+        {
+            Vector3 min = new Vector3(float.MaxValue, float.MaxValue, 0.0f);
+            Vector3 max = new Vector3(float.MinValue, float.MinValue, 0.0f);
+
+            List<Slot> drawOrder = skeleton.DrawOrder;
+            for (int i = 0, n = drawOrder.Count; i < n; i++)
+            {
+                Slot slot = drawOrder[i];
+                RegionAttachment regionAttachment = slot.Attachment as RegionAttachment;
+                if (regionAttachment != null)
+                {
+
+                    float[] vertices = this.vertices;
+                    regionAttachment.ComputeWorldVertices(slot.Bone, vertices);
+
+                    Vector3 testVector = new Vector3(vertices[RegionAttachment.X1], vertices[RegionAttachment.Y1], 0.0f);
+                    min = Vector3.Min(min, testVector);
+                    max = Vector3.Max(max, testVector);
+
+                    testVector = new Vector3(vertices[RegionAttachment.X2], vertices[RegionAttachment.Y2], 0.0f);
+                    min = Vector3.Min(min, testVector);
+                    max = Vector3.Max(max, testVector);
+
+                    testVector = new Vector3(vertices[RegionAttachment.X3], vertices[RegionAttachment.Y3], 0.0f);
+                    min = Vector3.Min(min, testVector);
+                    max = Vector3.Max(max, testVector);
+
+                    testVector = new Vector3(vertices[RegionAttachment.X4], vertices[RegionAttachment.Y4], 0.0f);
+                    min = Vector3.Min(min, testVector);
+                    max = Vector3.Max(max, testVector);
+                }
+            }
+
+            BoundingBox box = new BoundingBox(min, max);
+
+            return new Rectangle((int)min.X, (int)min.Y, (int)(max.X - min.X), (int)(max.Y - min.Y));
+        }
+
+
+        public bool getRectForSlot(Skeleton skeleton, string SlotName, out Rectangle resultRect)
+        {
+            Vector3 min = new Vector3(float.MaxValue, float.MaxValue, 0.0f);
+            Vector3 max = new Vector3(float.MinValue, float.MinValue, 0.0f);
+
+            List<Slot> drawOrder = skeleton.DrawOrder;
+            for (int i = 0, n = drawOrder.Count; i < n; i++)
+            {
+                Slot slot = drawOrder[i];
+                if (slot.ToString() == SlotName)
+                {
+                    RegionAttachment regionAttachment = slot.Attachment as RegionAttachment;
+                    if (regionAttachment != null)
+                    {
+
+                        float[] vertices = this.vertices;
+                        regionAttachment.ComputeWorldVertices(slot.Bone, vertices);
+
+                        Vector3 testVector = new Vector3(vertices[RegionAttachment.X1], vertices[RegionAttachment.Y1], 0.0f);
+                        min = Vector3.Min(min, testVector);
+                        max = Vector3.Max(max, testVector);
+
+                        testVector = new Vector3(vertices[RegionAttachment.X2], vertices[RegionAttachment.Y2], 0.0f);
+                        min = Vector3.Min(min, testVector);
+                        max = Vector3.Max(max, testVector);
+
+                        testVector = new Vector3(vertices[RegionAttachment.X3], vertices[RegionAttachment.Y3], 0.0f);
+                        min = Vector3.Min(min, testVector);
+                        max = Vector3.Max(max, testVector);
+
+                        testVector = new Vector3(vertices[RegionAttachment.X4], vertices[RegionAttachment.Y4], 0.0f);
+                        min = Vector3.Min(min, testVector);
+                        max = Vector3.Max(max, testVector);
+
+                        resultRect = new Rectangle((int)min.X, (int)min.Y, (int)(max.X - min.X), (int)(max.Y - min.Y));
+                        return true;
+
+                    }
+                }
+            }
+
+            resultRect = new Rectangle();
+            return false;
+        }
 	}
 }
