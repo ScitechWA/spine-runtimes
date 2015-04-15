@@ -51,6 +51,10 @@ namespace Spine {
 		BasicEffect effect;
 		public BasicEffect Effect { get { return effect; } set { effect = value; } }
 
+        // JLS: Added these accessors so we can do our own Begin/End with a custom shader.
+        public MeshBatcher Batcher { get { return batcher; } } 
+        public BlendState DefaultBlendState { get { return defaultBlendState; } set { defaultBlendState = value; } }
+
 		private bool premultipliedAlpha;
 		public bool PremultipliedAlpha { get { return premultipliedAlpha; } set { premultipliedAlpha = value; } }
 
