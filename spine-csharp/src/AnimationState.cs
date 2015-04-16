@@ -245,7 +245,19 @@ namespace Spine {
         /** Returns true if no animation is set or if the current time is greater than the animation duration, regardless of looping. */
         public bool IsComplete()
         {
-            return GetCurrent(0).Animation == null || GetCurrent(0).Time >= GetCurrent(0).Animation.Duration;
+            if (GetCurrent(0) != null)
+            {
+                if (GetCurrent(0).Animation == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return GetCurrent(0).Time >= GetCurrent(0).Animation.Duration;
+                }
+            }
+            else return true;
+
         }
 
 		override public String ToString () {
