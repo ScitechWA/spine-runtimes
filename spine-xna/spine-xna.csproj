@@ -138,13 +138,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\spine-csharp\spine-csharp_xna.csproj">
-      <Project>{DF7AAFE1-401E-4278-8F9A-3DD2B8CC3D0A}</Project>
-      <Name>spine-csharp_xna</Name>
-    </ProjectReference>
+    <Compile Include="src\SkeletonMeshRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\SkeletonMeshRenderer.cs" />
+    <ProjectReference Include="..\spine-csharp\spine-csharp_xna.csproj">
+      <Project>{df7aafe1-401e-4278-8f9a-3dd2b8cc3d0a}</Project>
+      <Name>spine-csharp_xna</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

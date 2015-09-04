@@ -57,6 +57,43 @@ namespace Spine {
 			this.data = data;
 		}
 
+        public float AnimationLength()
+        {
+            float longestDuration = 0;
+
+            for (int i = 0; i < tracks.Count; i++)
+            {
+                TrackEntry current = tracks[i];
+                if (current == null) continue;
+
+                if (current.Animation.Duration > longestDuration)
+                {
+                    longestDuration = current.Animation.Duration;
+                }
+            }
+
+            return longestDuration;
+        }
+
+        public void SetTime(float newTime)
+        {
+            for (int i = 0; i < tracks.Count; i++)
+            {
+                TrackEntry current = tracks[i];
+                if (current == null) continue;
+
+                float trackDelta = newTime - current.Time;
+                float endTime = current.endTime;
+
+                current.time = newTime;
+                if (current.previous != null)
+                {
+                    current.previous.time += trackDelta;
+                    current.mixTime += trackDelta;
+                }
+            }
+        }
+
 		public void Update (float delta) {
 			delta *= timeScale;
 			for (int i = 0; i < tracks.Count; i++) {
