@@ -38,17 +38,17 @@ using Microsoft.Xna.Framework;
 namespace Spine {
 	/// <summary>Draws region and mesh attachments.</summary>
 	public class SkeletonMeshRenderer {
-		private const int TL = 0;
-		private const int TR = 1;
-		private const int BL = 2;
-		private const int BR = 3;
+        protected const int TL = 0;
+        protected const int TR = 1;
+        protected const int BL = 2;
+        protected const int BR = 3;
 
-		GraphicsDevice device;
-		MeshBatcher batcher;
-		RasterizerState rasterizerState;
-		float[] vertices = new float[8];
-		int[] quadTriangles = { 0, 1, 2, 1, 3, 2 };
-		BlendState defaultBlendState;
+        protected GraphicsDevice device;
+        protected MeshBatcher batcher;
+        protected RasterizerState rasterizerState;
+		protected float[] vertices = new float[8];
+        protected int[] quadTriangles = { 0, 1, 2, 1, 3, 2 };
+        protected BlendState defaultBlendState;
 
 		BasicEffect effect;
 		public BasicEffect Effect { get { return effect; } set { effect = value; } }
@@ -57,7 +57,7 @@ namespace Spine {
         public MeshBatcher Batcher { get { return batcher; } } 
         public BlendState DefaultBlendState { get { return defaultBlendState; } set { defaultBlendState = value; } }
 
-		private bool premultipliedAlpha;
+        protected bool premultipliedAlpha;
 		public bool PremultipliedAlpha { get { return premultipliedAlpha; } set { premultipliedAlpha = value; } }
 
 		public SkeletonMeshRenderer (GraphicsDevice device) {
@@ -104,7 +104,7 @@ namespace Spine {
 			}
 		}
 
-		public void Draw (Skeleton skeleton) {
+		public virtual void Draw (Skeleton skeleton) {
 			float[] vertices = this.vertices;
 			List<Slot> drawOrder = skeleton.DrawOrder;
 			float skeletonR = skeleton.R, skeletonG = skeleton.G, skeletonB = skeleton.B, skeletonA = skeleton.A;
