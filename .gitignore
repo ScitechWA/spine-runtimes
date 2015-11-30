@@ -40,6 +40,11 @@ spine-csharp/bin
 spine-csharp/obj
 spine-csharp/src/*.cs.meta
 
+spine-sharpdx/bin
+spine-sharpdx/obj
+spine-sharpdx/src/*.cs.meta
+
+
 spine-monogame/xamarinstudio-ios/src/bin
 spine-monogame/xamarinstudio-ios/src/obj
 

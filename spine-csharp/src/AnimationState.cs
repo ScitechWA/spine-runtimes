@@ -76,6 +76,12 @@ namespace Spine {
             return longestDuration;
         }
 
+        public float GetTime()
+        {
+            TrackEntry current = tracks[0];
+            return current.time;
+        }
+
         public void SetTime(float newTime)
         {
             for (int i = 0; i < tracks.Count; i++)

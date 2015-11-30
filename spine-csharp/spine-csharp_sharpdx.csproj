@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{DF7AAFE1-401E-4278-8F9A-3DD2B8CC3D0A}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>spine_csharp_xna</RootNamespace>
+    <AssemblyName>spine-csharp_xna</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\x86\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\x86\Release</OutputPath>
+    <DefineConstants>TRACE;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\SharpDX-2.6.3\Bin\DirectX11-net40\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11">
+      <HintPath>..\..\SharpDX-2.6.3\Bin\DirectX11-net40\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11.Effects">
+      <HintPath>..\..\SharpDX-2.6.3\Bin\DirectX11-net40\SharpDX.Direct3D11.Effects.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Toolkit">
+      <HintPath>..\..\SharpDX-2.6.3\Bin\DirectX11-net40\SharpDX.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Toolkit.Audio">
+      <HintPath>..\..\SharpDX-2.6.3\Bin\DirectX11-net40\SharpDX.Toolkit.Audio.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Toolkit.Game">
+      <HintPath>..\..\SharpDX-2.6.3\Bin\DirectX11-net40\SharpDX.Toolkit.Game.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Toolkit.Graphics">
+      <HintPath>..\..\SharpDX-2.6.3\Bin\DirectX11-net40\SharpDX.Toolkit.Graphics.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Toolkit.Input">
+      <HintPath>..\..\SharpDX-2.6.3\Bin\DirectX11-net40\SharpDX.Toolkit.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Net">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Animation.cs" />
+    <Compile Include="src\AnimationState.cs" />
+    <Compile Include="src\AnimationStateData.cs" />
+    <Compile Include="src\Atlas.cs" />
+    <Compile Include="src\Attachments\AtlasAttachmentLoader.cs" />
+    <Compile Include="src\Attachments\Attachment.cs" />
+    <Compile Include="src\Attachments\AttachmentLoader.cs" />
+    <Compile Include="src\Attachments\AttachmentType.cs" />
+    <Compile Include="src\Attachments\BoundingBoxAttachment.cs" />
+    <Compile Include="src\Attachments\RegionAttachment.cs" />
+    <Compile Include="src\BlendMode.cs" />
+    <Compile Include="src\Bone.cs" />
+    <Compile Include="src\BoneData.cs" />
+    <Compile Include="src\IkConstraint.cs" />
+    <Compile Include="src\IkConstraintData.cs" />
+    <Compile Include="src\Event.cs" />
+    <Compile Include="src\EventData.cs" />
+    <Compile Include="src\Json.cs" />
+    <Compile Include="src\Skeleton.cs" />
+    <Compile Include="src\SkeletonBinary.cs" />
+    <Compile Include="src\SkeletonBounds.cs" />
+    <Compile Include="src\SkeletonData.cs" />
+    <Compile Include="src\SkeletonJson.cs" />
+    <Compile Include="src\Skin.cs" />
+    <Compile Include="src\Slot.cs" />
+    <Compile Include="src\SlotData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\Attachments\MeshAttachment.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\Attachments\SkinnedMeshAttachment.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="spine-csharp.csproj">
+      <Project>{94144e22-2431-4a8f-ac04-dec22f7edd8f}</Project>
+      <Name>spine-csharp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!--
+      To modify your build process, add your task inside one of the targets below and uncomment it. 
+      Other similar extension points exist, see Microsoft.Common.targets.
+      <Target Name="BeforeBuild">
+      </Target>
+      <Target Name="AfterBuild">
+      </Target>
+    -->
+</Project>
