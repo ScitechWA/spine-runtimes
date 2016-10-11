@@ -141,6 +141,9 @@
     <Compile Include="src\SkeletonMeshRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\spine-csharp\spine-csharp_xna.csproj">
       <Project>{df7aafe1-401e-4278-8f9a-3dd2b8cc3d0a}</Project>
       <Name>spine-csharp_xna</Name>
