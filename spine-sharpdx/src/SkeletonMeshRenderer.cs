@@ -34,9 +34,11 @@ using SharpDX.Toolkit.Graphics;
 using System.Collections.Generic;
 using System;
 
-namespace Spine {
-	/// <summary>Draws region and mesh attachments.</summary>
-	public class SkeletonMeshRenderer : ISkeletonMeshRenderer {
+namespace Spine
+{
+    /// <summary>Draws region and mesh attachments.</summary>
+    public class SkeletonMeshRenderer : ISkeletonMeshRenderer
+    {
         internal const int TL = 0;
         internal const int TR = 1;
         internal const int BL = 2;
@@ -47,19 +49,19 @@ namespace Spine {
         //internal RasterizerState rasterizerState;
         internal float[] vertices = new float[8];
         internal int[] quadTriangles = { 0, 1, 2, 1, 3, 2 };
-		internal BlendState defaultBlendState;
+        internal BlendState defaultBlendState;
 
         internal BlendState deviceBlendState;
 
-		Effect effect;
-		public Effect Effect { get { return effect; } set { effect = value; } }
+        Effect effect;
+        public Effect Effect { get { return effect; } set { effect = value; } }
 
         // JLS: Added these accessors so we can do our own Begin/End with a custom shader.
-        public MeshBatcher Batcher { get { return batcher; } } 
+        public MeshBatcher Batcher { get { return batcher; } }
         public BlendState DefaultBlendState { get { return defaultBlendState; } set { defaultBlendState = value; } }
 
-		private bool premultipliedAlpha;
-		public bool PremultipliedAlpha { get { return premultipliedAlpha; } set { premultipliedAlpha = value; } }
+        private bool premultipliedAlpha;
+        public bool PremultipliedAlpha { get { return premultipliedAlpha; } set { premultipliedAlpha = value; } }
 
         RasterizerState rasterizerState;
 
@@ -76,15 +78,16 @@ namespace Spine {
             }
         }
 
-        public SkeletonMeshRenderer (GraphicsDevice device, Effect e) {
-			this.device = device;
+        public SkeletonMeshRenderer(GraphicsDevice device, Effect e)
+        {
+            this.device = device;
 
             effect = e;
-			batcher = new MeshBatcher(device);
+            batcher = new MeshBatcher(device);
 
             deviceBlendState = device.BlendStates.NonPremultiplied;
             rasterizerState = device.RasterizerStates.CullNone;
-            
+
             /*
 			effect = new BasicEffect(device);
 			effect.World = Matrix.Identity;
@@ -96,17 +99,21 @@ namespace Spine {
 
 
             Bone.yDown = true;
-		}
+        }
 
-		public void Begin () {
+        public void Begin()
+        {
             defaultBlendState = premultipliedAlpha ? device.BlendStates.AlphaBlend : device.BlendStates.NonPremultiplied;
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
                 pass.BlendState = defaultBlendState;
                 pass.RasterizerState = rasterizerState;
+                pass.DepthStencilState = device.DepthStencilStates.None;
             }
-		}
+
+
+        }
 
         public void Begin(Matrix transformMatrix)
         {
@@ -116,24 +123,33 @@ namespace Spine {
             {
                 pass.BlendState = defaultBlendState;
                 pass.RasterizerState = rasterizerState;
+                pass.DepthStencilState = device.DepthStencilStates.None;
             }
         }
 
-		public void End () {
-			foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+        public void End()
+        {
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+            {
                 pass.BlendState = deviceBlendState;
-				batcher.Draw(device, pass);
-			}
-		}
-        
-        public void Draw (Skeleton skeleton) {
-			float[] vertices = this.vertices;
-			List<Slot> drawOrder = skeleton.DrawOrder;
-			float skeletonR = skeleton.R, skeletonG = skeleton.G, skeletonB = skeleton.B, skeletonA = skeleton.A;
-			for (int i = 0, n = drawOrder.Count; i < n; i++) {
-				Slot slot = drawOrder[i];
-				Attachment attachment = slot.Attachment;
-				if (attachment is RegionAttachment) {
+                batcher.Draw(device, pass);
+            }
+        }
+
+        public void Draw(Skeleton skeleton)
+        {
+            float[] vertices = this.vertices;
+            List<Slot> drawOrder = skeleton.DrawOrder;
+            float skeletonR = skeleton.R, skeletonG = skeleton.G, skeletonB = skeleton.B, skeletonA = skeleton.A;
+
+            for (int i = 0, n = drawOrder.Count; i < n; i++)
+            {
+                Slot slot = drawOrder[i];
+                Attachment attachment = slot.Attachment;
+
+                if (attachment is RegionAttachment)
+                {
+                    
 					RegionAttachment regionAttachment = (RegionAttachment)attachment;
                     BlendState blend = slot.Data.BlendMode == BlendMode.additive ? device.BlendStates.Additive : defaultBlendState;
                     if (deviceBlendState != blend)
@@ -142,13 +158,15 @@ namespace Spine {
                         deviceBlendState = blend;
                     }
 
+                    
                     MeshItem item = batcher.NextItem(4, 6);
-					item.triangles = quadTriangles;
+                    item.triangles = quadTriangles;
 					VertexPositionColorTexture[] itemVertices = item.vertices;
 
 					AtlasRegion region = (AtlasRegion)regionAttachment.RendererObject;
 					item.texture = (Texture2D)region.page.rendererObject;
 
+                    
 					Color color;
 					float a = skeletonA * slot.A * regionAttachment.A;
 					if (premultipliedAlpha) {
@@ -166,8 +184,9 @@ namespace Spine {
 					itemVertices[BL].Color = color;
 					itemVertices[BR].Color = color;
 					itemVertices[TR].Color = color;
+                    
 
-					regionAttachment.ComputeWorldVertices(slot.Bone, vertices);
+                    regionAttachment.ComputeWorldVertices(slot.Bone, vertices);
 					itemVertices[TL].Position.X = vertices[RegionAttachment.X1];
 					itemVertices[TL].Position.Y = vertices[RegionAttachment.Y1];
 					itemVertices[TL].Position.Z = 0;
@@ -190,83 +209,98 @@ namespace Spine {
 					itemVertices[BR].TextureCoordinate.Y = uvs[RegionAttachment.Y3];
 					itemVertices[TR].TextureCoordinate.X = uvs[RegionAttachment.X4];
 					itemVertices[TR].TextureCoordinate.Y = uvs[RegionAttachment.Y4];
-				} else if (attachment is MeshAttachment) {
-					MeshAttachment mesh = (MeshAttachment)attachment;
-					int vertexCount = mesh.Vertices.Length;
-					if (vertices.Length < vertexCount) vertices = new float[vertexCount];
-					mesh.ComputeWorldVertices(slot, vertices);
+                }
+                else if (attachment is MeshAttachment)
+                {
+                    MeshAttachment mesh = (MeshAttachment)attachment;
+                    int vertexCount = mesh.Vertices.Length;
+                    if (vertices.Length < vertexCount) vertices = new float[vertexCount];
+                    mesh.ComputeWorldVertices(slot, vertices);
 
-					int[] triangles = mesh.Triangles;
-					MeshItem item = batcher.NextItem(vertexCount, triangles.Length);
-					item.triangles = triangles;
+                    int[] triangles = mesh.Triangles;
+                    MeshItem item = batcher.NextItem(vertexCount, triangles.Length);
+                    item.triangles = triangles;
 
-					AtlasRegion region = (AtlasRegion)mesh.RendererObject;
-					item.texture = (Texture2D)region.page.rendererObject;
+                    AtlasRegion region = (AtlasRegion)mesh.RendererObject;
+                    item.texture = (Texture2D)region.page.rendererObject;
 
-					Color color;
-					float a = skeletonA * slot.A * mesh.A;
-					if (premultipliedAlpha) {
-						color = new Color(
-								skeletonR * slot.R * mesh.R * a,
-								skeletonG * slot.G * mesh.G * a,
-								skeletonB * slot.B * mesh.B * a, a);
-					} else {
-						color = new Color(
-								skeletonR * slot.R * mesh.R,
-								skeletonG * slot.G * mesh.G,
-								skeletonB * slot.B * mesh.B, a);
-					}
+                    Color color;
+                    float a = skeletonA * slot.A * mesh.A;
+                    if (premultipliedAlpha)
+                    {
+                        color = new Color(
+                                skeletonR * slot.R * mesh.R * a,
+                                skeletonG * slot.G * mesh.G * a,
+                                skeletonB * slot.B * mesh.B * a, a);
+                    }
+                    else
+                    {
+                        color = new Color(
+                                skeletonR * slot.R * mesh.R,
+                                skeletonG * slot.G * mesh.G,
+                                skeletonB * slot.B * mesh.B, a);
+                    }
 
-					float[] uvs = mesh.UVs;
-					VertexPositionColorTexture[] itemVertices = item.vertices;
-					for (int ii = 0, v = 0; v < vertexCount; ii++, v += 2) {
-						itemVertices[ii].Color = color;
-						itemVertices[ii].Position.X = vertices[v];
-						itemVertices[ii].Position.Y = vertices[v + 1];
-						itemVertices[ii].Position.Z = 0;
-						itemVertices[ii].TextureCoordinate.X = uvs[v];
-						itemVertices[ii].TextureCoordinate.Y = uvs[v + 1];
-					}
-				} else if (attachment is SkinnedMeshAttachment) {
-					SkinnedMeshAttachment mesh = (SkinnedMeshAttachment)attachment;
-					int vertexCount = mesh.UVs.Length;
-					if (vertices.Length < vertexCount) vertices = new float[vertexCount];
-					mesh.ComputeWorldVertices(slot, vertices);
+                    float[] uvs = mesh.UVs;
+                    VertexPositionColorTexture[] itemVertices = item.vertices;
+                    for (int ii = 0, v = 0; v < vertexCount; ii++, v += 2)
+                    {
+                        itemVertices[ii].Color = color;
+                        itemVertices[ii].Position.X = vertices[v];
+                        itemVertices[ii].Position.Y = vertices[v + 1];
+                        itemVertices[ii].Position.Z = 0;
+                        itemVertices[ii].TextureCoordinate.X = uvs[v];
+                        itemVertices[ii].TextureCoordinate.Y = uvs[v + 1];
+                    }
+                }
+                else if (attachment is SkinnedMeshAttachment)
+                {
+                    SkinnedMeshAttachment mesh = (SkinnedMeshAttachment)attachment;
+                    int vertexCount = mesh.UVs.Length;
+                    if (vertices.Length < vertexCount) vertices = new float[vertexCount];
+                    mesh.ComputeWorldVertices(slot, vertices);
 
-					int[] triangles = mesh.Triangles;
-					MeshItem item = batcher.NextItem(vertexCount, triangles.Length);
-					item.triangles = triangles;
+                    int[] triangles = mesh.Triangles;
+                    MeshItem item = batcher.NextItem(vertexCount, triangles.Length);
+                    item.triangles = triangles;
 
-					AtlasRegion region = (AtlasRegion)mesh.RendererObject;
-					item.texture = (Texture2D)region.page.rendererObject;
+                    AtlasRegion region = (AtlasRegion)mesh.RendererObject;
+                    item.texture = (Texture2D)region.page.rendererObject;
 
-					Color color;
-					float a = skeletonA * slot.A * mesh.A;
-					if (premultipliedAlpha) {
-						color = new Color(
-								skeletonR * slot.R * mesh.R * a,
-								skeletonG * slot.G * mesh.G * a,
-								skeletonB * slot.B * mesh.B * a, a);
-					} else {
-						color = new Color(
-								skeletonR * slot.R * mesh.R,
-								skeletonG * slot.G * mesh.G,
-								skeletonB * slot.B * mesh.B, a);
-					}
+                    Color color;
+                    float a = skeletonA * slot.A * mesh.A;
+                    if (premultipliedAlpha)
+                    {
+                        color = new Color(
+                                skeletonR * slot.R * mesh.R * a,
+                                skeletonG * slot.G * mesh.G * a,
+                                skeletonB * slot.B * mesh.B * a, a);
+                    }
+                    else
+                    {
+                        color = new Color(
+                                skeletonR * slot.R * mesh.R,
+                                skeletonG * slot.G * mesh.G,
+                                skeletonB * slot.B * mesh.B, a);
+                    }
 
-					float[] uvs = mesh.UVs;
-					VertexPositionColorTexture[] itemVertices = item.vertices;
-					for (int ii = 0, v = 0; v < vertexCount; ii++, v += 2) {
-						itemVertices[ii].Color = color;
-						itemVertices[ii].Position.X = vertices[v];
-						itemVertices[ii].Position.Y = vertices[v + 1];
-						itemVertices[ii].Position.Z = 0;
-						itemVertices[ii].TextureCoordinate.X = uvs[v];
-						itemVertices[ii].TextureCoordinate.Y = uvs[v + 1];
-					}
-				}
-			}
-		}
+                    float[] uvs = mesh.UVs;
+                    VertexPositionColorTexture[] itemVertices = item.vertices;
+                    for (int ii = 0, v = 0; v < vertexCount; ii++, v += 2)
+                    {
+                        itemVertices[ii].Color = color;
+                        itemVertices[ii].Position.X = vertices[v];
+                        itemVertices[ii].Position.Y = vertices[v + 1];
+                        itemVertices[ii].Position.Z = 0;
+                        itemVertices[ii].TextureCoordinate.X = uvs[v];
+                        itemVertices[ii].TextureCoordinate.Y = uvs[v + 1];
+                    }
+                }
+
+
+
+            }
+        }
 
         public Rectangle calcBoundingRect(Skeleton skeleton)
         {

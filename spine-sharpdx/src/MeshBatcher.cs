@@ -33,144 +33,178 @@ using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 
-namespace Spine {
-	// #region License
-	// /*
-	// Microsoft Public License (Ms-PL)
-	// MonoGame - Copyright © 2009 The MonoGame Team
-	//
-	// All rights reserved.
-	//
-	// This license governs use of the accompanying software. If you use the software, you accept this license. If you do not
-	// accept the license, do not use the software.
-	//
-	// 1. Definitions
-	// The terms "reproduce," "reproduction," "derivative works," and "distribution" have the same meaning here as under
-	// U.S. copyright law.
-	//
-	// A "contribution" is the original software, or any additions or changes to the software.
-	// A "contributor" is any person that distributes its contribution under this license.
-	// "Licensed patents" are a contributor's patent claims that read directly on its contribution.
-	//
-	// 2. Grant of Rights
-	// (A) Copyright Grant- Subject to the terms of this license, including the license conditions and limitations in section 3,
-	// each contributor grants you a non-exclusive, worldwide, royalty-free copyright license to reproduce its contribution, prepare derivative works of its contribution, and distribute its contribution or any derivative works that you create.
-	// (B) Patent Grant- Subject to the terms of this license, including the license conditions and limitations in section 3,
-	// each contributor grants you a non-exclusive, worldwide, royalty-free license under its licensed patents to make, have made, use, sell, offer for sale, import, and/or otherwise dispose of its contribution in the software or derivative works of the contribution in the software.
-	//
-	// 3. Conditions and Limitations
-	// (A) No Trademark License- This license does not grant you rights to use any contributors' name, logo, or trademarks.
-	// (B) If you bring a patent claim against any contributor over patents that you claim are infringed by the software,
-	// your patent license from such contributor to the software ends automatically.
-	// (C) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution
-	// notices that are present in the software.
-	// (D) If you distribute any portion of the software in source code form, you may do so only under this license by including
-	// a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object
-	// code form, you may only do so under a license that complies with this license.
-	// (E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees
-	// or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent
-	// permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular
-	// purpose and non-infringement.
-	// */
-	// #endregion License
-	//
+namespace Spine
+{
+    // #region License
+    // /*
+    // Microsoft Public License (Ms-PL)
+    // MonoGame - Copyright © 2009 The MonoGame Team
+    //
+    // All rights reserved.
+    //
+    // This license governs use of the accompanying software. If you use the software, you accept this license. If you do not
+    // accept the license, do not use the software.
+    //
+    // 1. Definitions
+    // The terms "reproduce," "reproduction," "derivative works," and "distribution" have the same meaning here as under
+    // U.S. copyright law.
+    //
+    // A "contribution" is the original software, or any additions or changes to the software.
+    // A "contributor" is any person that distributes its contribution under this license.
+    // "Licensed patents" are a contributor's patent claims that read directly on its contribution.
+    //
+    // 2. Grant of Rights
+    // (A) Copyright Grant- Subject to the terms of this license, including the license conditions and limitations in section 3,
+    // each contributor grants you a non-exclusive, worldwide, royalty-free copyright license to reproduce its contribution, prepare derivative works of its contribution, and distribute its contribution or any derivative works that you create.
+    // (B) Patent Grant- Subject to the terms of this license, including the license conditions and limitations in section 3,
+    // each contributor grants you a non-exclusive, worldwide, royalty-free license under its licensed patents to make, have made, use, sell, offer for sale, import, and/or otherwise dispose of its contribution in the software or derivative works of the contribution in the software.
+    //
+    // 3. Conditions and Limitations
+    // (A) No Trademark License- This license does not grant you rights to use any contributors' name, logo, or trademarks.
+    // (B) If you bring a patent claim against any contributor over patents that you claim are infringed by the software,
+    // your patent license from such contributor to the software ends automatically.
+    // (C) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution
+    // notices that are present in the software.
+    // (D) If you distribute any portion of the software in source code form, you may do so only under this license by including
+    // a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object
+    // code form, you may only do so under a license that complies with this license.
+    // (E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees
+    // or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent
+    // permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular
+    // purpose and non-infringement.
+    // */
+    // #endregion License
+    //
 
-	/// <summary>Draws batched meshes.</summary>
-	public class MeshBatcher {
-		private readonly List<MeshItem> items;
-		private readonly Queue<MeshItem> freeItems;
-		private VertexPositionColorTexture[] vertexArray = { };
-		private short[] triangles = { };
+    /// <summary>Draws batched meshes.</summary>
+    public class MeshBatcher
+    {
+        private readonly List<MeshItem> items;
+        private readonly Queue<MeshItem> freeItems;
+        private VertexPositionColorTexture[] vertexArray = { };
+        private short[] triangles = { };
 
         private Buffer<VertexPositionColorTexture> VertexBuffer;
         private Buffer<short> IndexBuffer;
         private VertexInputLayout inputLayout;
         private GraphicsDevice device;
 
-		public MeshBatcher (GraphicsDevice device) {
+        public MeshBatcher(GraphicsDevice device)
+        {
 
             this.device = device;
             items = new List<MeshItem>(256);
-			freeItems = new Queue<MeshItem>(256);
-			EnsureCapacity(256, 512);
+            freeItems = new Queue<MeshItem>(256);
+            EnsureCapacity(256, 512);
+
+        }
+
+        /// <summary>Returns a pooled MeshItem.</summary>
+        public MeshItem NextItem(int vertexCount, int triangleCount)
+        {
+            MeshItem item = freeItems.Count > 0 ? freeItems.Dequeue() : new MeshItem();
+            if (item.vertices.Length < vertexCount) item.vertices = new VertexPositionColorTexture[vertexCount];
+            if (item.triangles.Length < triangleCount) item.triangles = new int[triangleCount];
+            item.vertexCount = vertexCount;
+            item.triangleCount = triangleCount;
+            items.Add(item);
+            return item;
+        }
+
+        private void EnsureCapacity(int vertexCount, int triangleCount)
+        {
+            if (vertexArray.Length < vertexCount) vertexArray = new VertexPositionColorTexture[vertexCount];
+            if (triangles.Length < triangleCount) triangles = new short[triangleCount];
+
+            if (VertexBuffer == null)
+            {
+                VertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<VertexPositionColorTexture>(device, vertexArray.Length, SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            }
+            else
+            {
+                if (VertexBuffer.ElementCount < vertexArray.Length)
+                {
+                    VertexBuffer.Dispose();
+                    VertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<VertexPositionColorTexture>(device, vertexArray.Length, SharpDX.Direct3D11.ResourceUsage.Dynamic);
+                }
+            }
             
-		}
 
-		/// <summary>Returns a pooled MeshItem.</summary>
-		public MeshItem NextItem (int vertexCount, int triangleCount) {
-			MeshItem item = freeItems.Count > 0 ? freeItems.Dequeue() : new MeshItem();
-			if (item.vertices.Length < vertexCount) item.vertices = new VertexPositionColorTexture[vertexCount];
-			if (item.triangles.Length < triangleCount) item.triangles = new int[triangleCount];
-			item.vertexCount = vertexCount;
-			item.triangleCount = triangleCount;
-			items.Add(item);
-			return item;
-		}
+            if (IndexBuffer == null)
+            {
+                IndexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<short>(device, triangles.Length, SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            }
+            else
+            {
+                if (IndexBuffer.ElementCount < triangles.Length)
+                {
+                    IndexBuffer.Dispose();
+                    IndexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<short>(device, triangles.Length, SharpDX.Direct3D11.ResourceUsage.Dynamic);
+                }
+            }
 
-		private void EnsureCapacity (int vertexCount, int triangleCount) {
-			if (vertexArray.Length < vertexCount) vertexArray = new VertexPositionColorTexture[vertexCount];
-			if (triangles.Length < triangleCount) triangles = new short[triangleCount];
+        }
 
-            VertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<VertexPositionColorTexture>(device, vertexArray.Length, SharpDX.Direct3D11.ResourceUsage.Dynamic);
-            IndexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<short>(device, triangles.Length, SharpDX.Direct3D11.ResourceUsage.Dynamic);
-		}
+        public void Draw(GraphicsDevice device, EffectPass effectPass)
+        {
+            if (items.Count == 0) return;
 
-		public void Draw (GraphicsDevice device, EffectPass effectPass) {
-			if (items.Count == 0) return;
+            int itemCount = items.Count;
+            int vertexCount = 0, triangleCount = 0;
+            for (int i = 0; i < itemCount; i++)
+            {
+                MeshItem item = items[i];
+                vertexCount += item.vertexCount;
+                triangleCount += item.triangleCount;
+            }
+            EnsureCapacity(vertexCount, triangleCount);
 
-			int itemCount = items.Count;
-			int vertexCount = 0, triangleCount = 0;
-			for (int i = 0; i < itemCount; i++) {
-				MeshItem item = items[i];
-				vertexCount += item.vertexCount;
-				triangleCount += item.triangleCount;
-			}
-			EnsureCapacity(vertexCount, triangleCount);
-
-			vertexCount = 0;
-			triangleCount = 0;
-			Texture2D lastTexture = null;
-			for (int i = 0; i < itemCount; i++) 
+            vertexCount = 0;
+            triangleCount = 0;
+            Texture2D lastTexture = null;
+            for (int i = 0; i < itemCount; i++)
             //for (int i = 0; i < 1; i++)
             {
-				MeshItem item = items[i];
-				int itemVertexCount = item.vertexCount;
+                MeshItem item = items[i];
+                int itemVertexCount = item.vertexCount;
 
-				if (item.texture != lastTexture || vertexCount + itemVertexCount > short.MaxValue) {
+                if (item.texture != lastTexture || vertexCount + itemVertexCount > short.MaxValue)
+                {
                     effectPass.Apply();
                     FlushVertexArray(device, vertexCount, triangleCount);
-					vertexCount = 0;
-					triangleCount = 0;
-					lastTexture = item.texture;
+                    vertexCount = 0;
+                    triangleCount = 0;
+                    lastTexture = item.texture;
 
                     effectPass.Effect.Parameters["Texture"].SetResource(lastTexture);
                     //effectPass.Apply();
-                    
-					//device. Textures[0] = lastTexture;
-				}
 
-				int[] itemTriangles = item.triangles;
-				int itemTriangleCount = item.triangleCount;
-				for (int ii = 0, t = triangleCount; ii < itemTriangleCount; ii++, t++)
-					triangles[t] = (short)(itemTriangles[ii] + vertexCount);
-				triangleCount += itemTriangleCount;
+                    //device. Textures[0] = lastTexture;
+                }
 
-				Array.Copy(item.vertices, 0, vertexArray, vertexCount, itemVertexCount);
-				vertexCount += itemVertexCount;
+                int[] itemTriangles = item.triangles;
+                int itemTriangleCount = item.triangleCount;
+                for (int ii = 0, t = triangleCount; ii < itemTriangleCount; ii++, t++)
+                    triangles[t] = (short)(itemTriangles[ii] + vertexCount);
+                triangleCount += itemTriangleCount;
 
-				item.texture = null;
-				freeItems.Enqueue(item);
-			}
+                Array.Copy(item.vertices, 0, vertexArray, vertexCount, itemVertexCount);
+                vertexCount += itemVertexCount;
+
+                item.texture = null;
+                freeItems.Enqueue(item);
+            }
             effectPass.Apply();
 
-            
+
 
             FlushVertexArray(device, vertexCount, triangleCount);
-			items.Clear();
-		}
+            items.Clear();
+        }
 
-		private void FlushVertexArray (GraphicsDevice device, int vertexCount, int triangleCount) {
-			if (vertexCount == 0) return;
+        private void FlushVertexArray(GraphicsDevice device, int vertexCount, int triangleCount)
+        {
+            if (vertexCount == 0) return;
 
 
             //
@@ -183,19 +217,20 @@ namespace Spine {
             device.SetVertexBuffer(VertexBuffer);
             device.SetVertexInputLayout(inputLayout);
             device.DrawIndexed(PrimitiveType.TriangleList, triangleCount * 3);
-			/*device.DrawUserIndexedPrimitives(
+            /*device.DrawUserIndexedPrimitives(
 				PrimitiveType.TriangleList,
 				vertexArray, 0, vertexCount,
 				triangles, 0, triangleCount / 3,
 				VertexPositionColorTexture.VertexDeclaration);
             */
-		}
-	}
+        }
+    }
 
-	public class MeshItem {
-		public Texture2D texture;
-		public int vertexCount, triangleCount;
-		public VertexPositionColorTexture[] vertices = { };
-		public int[] triangles = { };
-	}
+    public class MeshItem
+    {
+        public Texture2D texture;
+        public int vertexCount, triangleCount;
+        public VertexPositionColorTexture[] vertices = { };
+        public int[] triangles = { };
+    }
 }
